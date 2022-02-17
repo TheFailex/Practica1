@@ -1,0 +1,249 @@
+[
+    {
+        "id": "e6c444d71602522f",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8c54e349a35aa9ea",
+        "type": "openweathermap",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "wtype": "forecast",
+        "lon": "",
+        "lat": "",
+        "city": "Alicante",
+        "country": "Spain",
+        "language": "en",
+        "x": 420,
+        "y": 360,
+        "wires": [
+            [
+                "28b66e0b33ce7298",
+                "d640fa435482346d",
+                "dfca5d1a267c87fc"
+            ]
+        ]
+    },
+    {
+        "id": "3854efb689710221",
+        "type": "inject",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 360,
+        "wires": [
+            [
+                "8c54e349a35aa9ea"
+            ]
+        ]
+    },
+    {
+        "id": "28b66e0b33ce7298",
+        "type": "debug",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d640fa435482346d",
+        "type": "function",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "func": "variable = msg.payload\n\nmsg.payload = variable[0].main.temp\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 200,
+        "wires": [
+            [
+                "638004e9da3f01da",
+                "9a42e2150c409a84"
+            ]
+        ]
+    },
+    {
+        "id": "638004e9da3f01da",
+        "type": "debug",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "9a42e2150c409a84",
+        "type": "ui_gauge",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "group": "3c9eb7c4558ee50c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatura Alicante",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 900,
+        "y": 80,
+        "wires": [],
+        "info": "//Hay que usar /ui al final del puerto (http://127.0.0.1:1880/) para ver el dashboard"
+    },
+    {
+        "id": "dfca5d1a267c87fc",
+        "type": "function",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "func": "variable = msg.payload\n\nmsg.payload = variable[39].main.humidity\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 480,
+        "wires": [
+            [
+                "6a3bfee58ab4df9d",
+                "d6132b1cc4e1e31f"
+            ]
+        ]
+    },
+    {
+        "id": "6a3bfee58ab4df9d",
+        "type": "ui_chart",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "group": "aba25d489f0937d5",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Humedad",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "D/M",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": "5",
+        "removeOlderPoints": "1000",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "x": 800,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d6132b1cc4e1e31f",
+        "type": "debug",
+        "z": "e6c444d71602522f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "3c9eb7c4558ee50c",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "c56a40c79803d51b",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "aba25d489f0937d5",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "c56a40c79803d51b",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "c56a40c79803d51b",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
