@@ -1,0 +1,146 @@
+[
+    {
+        "id": "245776dcae5c229a",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3ff20eb5debdd37b",
+        "type": "telegram command",
+        "z": "245776dcae5c229a",
+        "name": "Pedir Tiempo",
+        "command": "/tiempo",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "scope": "default",
+        "bot": "a71de41e6e28d3f6",
+        "strict": false,
+        "hasresponse": true,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 2,
+        "x": 130,
+        "y": 180,
+        "wires": [
+            [
+                "d4f6d5d30615f6d5"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "d4f6d5d30615f6d5",
+        "type": "openweathermap",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "wtype": "current",
+        "lon": "",
+        "lat": "",
+        "city": "Alicante",
+        "country": "Spain",
+        "language": "en",
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "2f1ef8508efd2e3a"
+            ]
+        ]
+    },
+    {
+        "id": "ce645cb17a83dba6",
+        "type": "telegram sender",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "bot": "a71de41e6e28d3f6",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1050,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2f1ef8508efd2e3a",
+        "type": "function",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "func": "Dato = msg.payload;\nvar Mensaje = \"El tiempo ahora es:\\r\\n\";\nMensaje += \"Clima: \" + Dato.weather;\nMensaje += \"\\r\\n\";\nMensaje += \"Temperatura: \" + Dato.tempc;\nMensaje += \"\\r\\n\";\nMensaje += \"Humedad: \" + Dato.humidity;\nmsg.payload.content = Mensaje;\n//var msg1 = {payload: msg.payload.content}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 180,
+        "wires": [
+            [
+                "c32146bc33d15cf4"
+            ]
+        ]
+    },
+    {
+        "id": "c32146bc33d15cf4",
+        "type": "change",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload.chatId",
+                "pt": "msg",
+                "to": "836378389",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload.type",
+                "pt": "msg",
+                "to": "message",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 840,
+        "y": 180,
+        "wires": [
+            [
+                "ce645cb17a83dba6"
+            ]
+        ]
+    },
+    {
+        "id": "a71de41e6e28d3f6",
+        "type": "telegram bot",
+        "z": "245776dcae5c229a",
+        "botname": "TiempoBot",
+        "usernames": "Castejon18",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": true
+    }
+]
