@@ -23,13 +23,15 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 2,
-        "x": 130,
-        "y": 180,
+        "x": 90,
+        "y": 340,
         "wires": [
             [
-                "d4f6d5d30615f6d5"
+                "9d126f432b4c6ad4"
             ],
-            []
+            [
+                "ed945602c8c00b9f"
+            ]
         ]
     },
     {
@@ -40,11 +42,12 @@
         "wtype": "current",
         "lon": "",
         "lat": "",
-        "city": "Alicante",
-        "country": "Spain",
-        "language": "en",
-        "x": 360,
-        "y": 180,
+        "city": "",
+        "country": "",
+        "language": "es",
+        "credentials": {},
+        "x": 510,
+        "y": 340,
         "wires": [
             [
                 "2f1ef8508efd2e3a"
@@ -59,8 +62,8 @@
         "bot": "a71de41e6e28d3f6",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 1050,
-        "y": 180,
+        "x": 1210,
+        "y": 340,
         "wires": [
             []
         ]
@@ -70,48 +73,190 @@
         "type": "function",
         "z": "245776dcae5c229a",
         "name": "",
-        "func": "Dato = msg.payload;\nvar Mensaje = \"El tiempo ahora es:\\r\\n\";\nMensaje += \"Clima: \" + Dato.weather;\nMensaje += \"\\r\\n\";\nMensaje += \"Temperatura: \" + Dato.tempc;\nMensaje += \"\\r\\n\";\nMensaje += \"Humedad: \" + Dato.humidity;\nmsg.payload.content = Mensaje;\n//var msg1 = {payload: msg.payload.content}\nreturn msg;",
+        "func": "Dato = msg.payload;\nvar Mensaje = \"El tiempo ahora en \" + Dato.location + \" es:\\r\\n\";\nMensaje += \"Clima: \" + Dato.detail;\nMensaje += \"\\r\\n\";\nMensaje += \"Temperatura: \" + Dato.tempc + \"º\";\nMensaje += \"\\r\\n\";\nMensaje += \"Humedad: \" + Dato.humidity + \"%\";\nmsg.payload.content = Mensaje;\nmsg.payload.chatId = flow.get(\"chatId\");\nmsg.payload.type = flow.get(\"type\");\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 580,
-        "y": 180,
+        "x": 740,
+        "y": 340,
         "wires": [
             [
-                "c32146bc33d15cf4"
+                "ce645cb17a83dba6"
             ]
         ]
     },
     {
-        "id": "c32146bc33d15cf4",
-        "type": "change",
+        "id": "ee29447c6b24cec6",
+        "type": "telegram command",
         "z": "245776dcae5c229a",
         "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload.chatId",
-                "pt": "msg",
-                "to": "836378389",
-                "tot": "num"
-            },
-            {
-                "t": "set",
-                "p": "payload.type",
-                "pt": "msg",
-                "to": "message",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 840,
-        "y": 180,
+        "command": "/ciudad",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "scope": "default",
+        "bot": "a71de41e6e28d3f6",
+        "strict": false,
+        "hasresponse": true,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 2,
+        "x": 130,
+        "y": 580,
+        "wires": [
+            [
+                "c9ab9a9a93fa8d70"
+            ],
+            [
+                "ed945602c8c00b9f"
+            ]
+        ]
+    },
+    {
+        "id": "87d912bdb3c2b446",
+        "type": "telegram command",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "command": "/start",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "scope": "default",
+        "bot": "a71de41e6e28d3f6",
+        "strict": false,
+        "hasresponse": true,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 2,
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "62f8b6f40db1a2fe"
+            ],
+            [
+                "ed945602c8c00b9f"
+            ]
+        ]
+    },
+    {
+        "id": "62f8b6f40db1a2fe",
+        "type": "function",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "func": "var Mensaje = \"¡Bienvenido al bot de tiempo!\\r\\n\";\nMensaje += \"Para seleccionar la ciudad escriba:\\r\\n /ciudad Ciudad Pais\\r\\n\";\nMensaje += \"Para consultar el tiempo de la ciudad escriba:\\r\\n /tiempo\";\nMensaje += \"\";\nmsg.payload.content = Mensaje;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 140,
+        "wires": [
+            [
+                "ce645cb17a83dba6"
+            ]
+        ]
+    },
+    {
+        "id": "c9ab9a9a93fa8d70",
+        "type": "function",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "func": "var Entrada = msg.payload.content;\nvar output = Entrada.split(\" \");\nvar ciudad = output[1];\nvar pais = output[2];\nvar msg1 = {};\nmsg1.payload = {};\nmsg1.payload.chatId = msg.payload.chatId;\nmsg1.payload.type = msg.payload.type;\nflow.set(\"city\", ciudad);\nflow.set(\"country\", pais);\nvar Mensaje = flow.get(\"city\") + \", \" + flow.get(\"country\") + \": SELECCIONADO\";\nmsg1.payload.content = Mensaje;\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 580,
+        "wires": [
+            [
+                "ce645cb17a83dba6"
+            ]
+        ]
+    },
+    {
+        "id": "9d126f432b4c6ad4",
+        "type": "function",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "func": "var msg1 = {};\nmsg1.location = {};\nmsg1.location.city = flow.get(\"city\");\nmsg1.location.country = flow.get(\"country\");\nflow.set(\"chatId\", msg.payload.chatId);\nflow.set(\"type\", msg.payload.type);\nreturn msg1;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 340,
+        "wires": [
+            [
+                "d4f6d5d30615f6d5"
+            ]
+        ]
+    },
+    {
+        "id": "4290b39e9004afec",
+        "type": "telegram command",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "command": "/help",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "scope": "default",
+        "bot": "a71de41e6e28d3f6",
+        "strict": false,
+        "hasresponse": true,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 2,
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "a77967380dd83e7a"
+            ],
+            [
+                "ed945602c8c00b9f"
+            ]
+        ]
+    },
+    {
+        "id": "a77967380dd83e7a",
+        "type": "function",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "func": "var Mensaje = \"Para seleccionar la ciudad escriba:\\r\\n /ciudad Ciudad Pais\\r\\n\";\nMensaje += \"Para consultar el tiempo de la ciudad escriba:\\r\\n /tiempo\";\nMensaje += \"\";\nmsg.payload.content = Mensaje;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 200,
+        "wires": [
+            [
+                "ce645cb17a83dba6"
+            ]
+        ]
+    },
+    {
+        "id": "ed945602c8c00b9f",
+        "type": "function",
+        "z": "245776dcae5c229a",
+        "name": "",
+        "func": "var Mensaje = \"¡El comando que está intentando introducir es incorrecto!\\r\\n\";\nMensaje += \"Para obtener información sobre los comandos escriba: /help\";\nmsg.payload.content = Mensaje;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 420,
         "wires": [
             [
                 "ce645cb17a83dba6"
@@ -123,7 +268,7 @@
         "type": "telegram bot",
         "z": "245776dcae5c229a",
         "botname": "TiempoBot",
-        "usernames": "Castejon18",
+        "usernames": "",
         "chatids": "",
         "baseapiurl": "",
         "updatemode": "polling",
