@@ -1,0 +1,426 @@
+[
+    {
+        "id": "522a6776a9c33e2f",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dce34fa7.56d7d",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Generación tec.",
+        "func": "let now = new Date();\n\nvar array = msg.payload.included;\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'(%)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nvar array_aux = [];\nvar array_aux2 = [];\n\nfor(let i = 0; i < array.length - 1; i++){\n    if(array[i].attributes.type == \"Renovable\"){\n        array_aux.push(array[i].attributes);\n        //array_aux.title.push(array[i].attributes.title);\n    }else{\n        array_aux2.push(array[i].attributes);\n        //array_aux.title.push(array[i].attributes.title);\n    }\n}\n\nvar aux = {};\n\nfor(let i = 0; i < array_aux.length; i++){\n    for(let j = i; j < array_aux.length; j++){\n        if(array_aux[j].values[0].percentage > array_aux[i].values[0].percentage){\n            aux = array_aux[i];\n            array_aux[i] = array_aux[j];\n            array_aux[j] = aux;\n        }\n    }\n}\n\nfor(let i = 0; i < array_aux2.length; i++){\n    for(let j = i; j < array_aux2.length; j++){\n        if(array_aux2[j].values[0].percentage > array_aux2[i].values[0].percentage){\n            aux = array_aux2[i];\n            array_aux2[i] = array_aux2[j];\n            array_aux2[j] = aux;\n        }\n    }\n}\nlet j = 0;\nfor (let i=0; i<6; i++) {\n    if(i >= 0 && i <= 2){\n        m.data.datasets[0].data.push(array_aux[i].values[0].percentage*100);\n        m.data.labels.push(array_aux[i].title);\n    }else{\n        m.data.datasets[0].data.push(array_aux2[j].values[0].percentage*100);\n        m.data.labels.push(array_aux2[j].title);\n        j++;\n    }\n}\n\nmsg.payload = m;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 120,
+        "wires": [
+            [
+                "75d585ce0d9556cc"
+            ]
+        ]
+    },
+    {
+        "id": "62271758.c63728",
+        "type": "file",
+        "z": "522a6776a9c33e2f",
+        "name": "Image dump",
+        "filename": "~/Documentos/test.png",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 990,
+        "y": 180,
+        "wires": [
+            [
+                "18d162d1.33e8ed"
+            ]
+        ]
+    },
+    {
+        "id": "18d162d1.33e8ed",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Envío de foto",
+        "func": "msg.payload = {chatId: flow.get(\"chatId\"), type:\"photo\", content:\"~/Documentos/test.png\", caption:\"Gráfico de precios de la electricidad en el último día\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 180,
+        "wires": [
+            [
+                "f7ea37e0.ae85f8"
+            ]
+        ]
+    },
+    {
+        "id": "f7ea37e0.ae85f8",
+        "type": "telegram sender",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "bot": "e7b05566381b14e8",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 830,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4bfe6190.6619c",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Precios",
+        "func": "var mercado = msg.payload;\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:true,\n            text:'Línea amarilla: PVPC (euro/MWh) // Línea azul: Precio mercado spot (euro/MWh)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Series 1\",\n                borderColor:'rgba(184, 163, 57,0.8)',\n                backgroundColor:'rgba(184, 163, 57,0.1)',\n                fill:false,\n                data:[]\n            },\n            {\n                label:\"Series 2\",\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            },\n        ]\n    }\n}\n\nfor (let i=0; i<24; i++) {\n    m.data.datasets[0].data.push(mercado.included[0].attributes.values[i].value);\n    m.data.datasets[1].data.push(mercado.included[1].attributes.values[i].value);\n    m.data.labels.push(mercado.included[0].attributes.values[i].datetime[11] + mercado.included[0].attributes.values[i].datetime[12]);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 180,
+        "wires": [
+            [
+                "c86b69d5.68d2d8"
+            ]
+        ]
+    },
+    {
+        "id": "c86b69d5.68d2d8",
+        "type": "chart-image",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "width": "550",
+        "height": "500",
+        "x": 830,
+        "y": 180,
+        "wires": [
+            [
+                "62271758.c63728"
+            ]
+        ]
+    },
+    {
+        "id": "fd0df04c528a3997",
+        "type": "http request",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "method": "use",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "6641eaaea59c35ee"
+            ]
+        ]
+    },
+    {
+        "id": "6641eaaea59c35ee",
+        "type": "json",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "4bfe6190.6619c"
+            ]
+        ]
+    },
+    {
+        "id": "950782ad87e92911",
+        "type": "telegram receiver",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "bot": "e7b05566381b14e8",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "x": 110,
+        "y": 40,
+        "wires": [
+            [
+                "ac35ad6129569392"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "ac35ad6129569392",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "func": "var mensaje = msg.payload;\n\nvar Bienvenida = \"¡Bienvenido al Bot de Red eléctrica de España!\\r\\n\";\nBienvenida += \"Para introducir los comandos, puede dirigirse a la pestaña 'Menú' que aparece a la izquierda del cuadro para escribir mensajes, o bien puede escribir directamente el comando.\\r\\n\";\nBienvenida += \"La lista de comandos es: \\r\\n\";\nBienvenida += \"/ren_vs_noren - Gráfico de la potencia instalada renovable y no renovable\\r\\n\";\nBienvenida += \"/precios - Gráfico de precios\\r\\n\";\nBienvenida += \"/generacion - Gráfico de generación de tecnologías\\r\\n\";\n\nvar Ayuda = \"Para introducir los comandos, puede dirigirse a la pestaña 'Menú' que aparece a la izquierda del cuadro para escribir mensajes, o bien puede escribir directamente el comando.\\r\\n\";\nAyuda += \"La lista de comandos es: \\r\\n\";\nAyuda += \"/ren_vs_noren - Gráfico de la potencia instalada renovable y no renovable\\r\\n\";\nAyuda += \"/precios - Gráfico de precios\\r\\n\";\nAyuda += \"/generacion - Gráfico de generación de tecnologías\\r\\n\";\n\nlet now = new Date();\nvar dia = now.getDate();\nvar anio = now.getFullYear();\nvar mes = now.getMonth() + 1;\nvar metodo = \"get\";\n\nflow.set(\"chatId\", mensaje.chatId);\nflow.set(\"mansaje\", mensaje.content);\nflow.set(\"type\", mensaje.type)\n\nif (mensaje.content == \"/ren_vs_noren\"){\n    var msg1 = {};\n    msg1.method = {};\n    msg1.url = {};\n    msg1.method = metodo;\n    msg1.url = \"https://apidatos.ree.es/es/datos/generacion/potencia-instalada?start_date=\" + anio + \"-\" + \"01\" + \"-\" + \"01\" + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&time_trunc=year\";\n    return [msg1, null, null, null, null, null];\n}else if(mensaje.content == \"/generacion\"){\n    var msg2 = {};\n    msg2.method = {};\n    msg2.url = {};\n    msg2.method = metodo;\n    msg2.url = \"https://apidatos.ree.es/es/datos/generacion/estructura-generacion?start_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T23:59&time_trunc=day&geo_limit=ccaa\";\n    return [null, msg2, null, null, null, null];\n}else if(mensaje.content == \"/precios\"){\n    var msg3 = {};\n    msg3.method = {};\n    msg3.url = {};\n    msg3.method = metodo;\n    msg3.url = \"https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T23:59&time_trunc=hour\";\n    return [null, null, msg3, null, null, null];\n}else if (mensaje.content == \"/start\" || mensaje.content == \"Hola\"){\n   var msg4 = {};\n   msg4.payload = {};\n   msg4.payload.content = Bienvenida;\n   msg4.payload.chatId = flow.get(\"chatId\");\n   msg4.payload.type = flow.get(\"type\");\n   return [null, null, null, msg4, null]; \n}else if(mensaje.content == \"/help\"){\n    var msg5 = {};\n    msg5.payload = {};\n    msg5.payload.content = Ayuda;\n    msg5.payload.chatId = flow.get(\"chatId\");\n    msg5.payload.type = flow.get(\"type\");\n    return [null, null, null, null, msg5, null];\n}else{\n    msg.payload.content = \"Comando incorrecto. Use /help para ver la lista de comandos\";\n    return [null, null, null, null, null, msg];\n}",
+        "outputs": 6,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 120,
+        "y": 180,
+        "wires": [
+            [
+                "2f135417b3216a6a"
+            ],
+            [
+                "e29504af49635881"
+            ],
+            [
+                "fd0df04c528a3997"
+            ],
+            [
+                "f7ea37e0.ae85f8"
+            ],
+            [
+                "f7ea37e0.ae85f8"
+            ],
+            [
+                "f7ea37e0.ae85f8"
+            ]
+        ]
+    },
+    {
+        "id": "e29504af49635881",
+        "type": "http request",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "method": "use",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 350,
+        "y": 120,
+        "wires": [
+            [
+                "0a599cf88ed6b8ca"
+            ]
+        ]
+    },
+    {
+        "id": "0a599cf88ed6b8ca",
+        "type": "json",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 490,
+        "y": 120,
+        "wires": [
+            [
+                "dce34fa7.56d7d"
+            ]
+        ]
+    },
+    {
+        "id": "75d585ce0d9556cc",
+        "type": "chart-image",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "width": "550",
+        "height": "500",
+        "x": 830,
+        "y": 120,
+        "wires": [
+            [
+                "dad21271452396b0"
+            ]
+        ]
+    },
+    {
+        "id": "dad21271452396b0",
+        "type": "file",
+        "z": "522a6776a9c33e2f",
+        "name": "Image dump",
+        "filename": "~/Documentos/test.png",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 990,
+        "y": 120,
+        "wires": [
+            [
+                "e296cb31c03da977"
+            ]
+        ]
+    },
+    {
+        "id": "e296cb31c03da977",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Envío de foto",
+        "func": "msg.payload = {chatId: flow.get(\"chatId\"), type:\"photo\", content:\"~/Documentos/test.png\", caption:\"Gráfico de generación de las principales tecnologias tanto renovables como no renovables\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 120,
+        "wires": [
+            [
+                "f7ea37e0.ae85f8"
+            ]
+        ]
+    },
+    {
+        "id": "891443f634303f88",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Ren_vs_no_ren",
+        "func": "let now = new Date();\n\nvar array = msg.payload.included;\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'(%)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nvar array_aux = [];\nvar array_aux2 = [];\n\nfor(let i = 0; i < array.length - 1; i++){\n    if(array[i].attributes.type == \"Renovable\"){\n        array_aux.push(array[i].attributes);\n    }else{\n        array_aux2.push(array[i].attributes);\n    }\n}\n\nvar pot_instalada_ren = 0;\n\nfor(let i = 0; i < array_aux.length; i++){\n    pot_instalada_ren = pot_instalada_ren + array_aux[i].values[0].percentage;\n}\n\nvar pot_instalada_no_ren = 0;\n\nfor(let i = 0; i < array_aux2.length; i++){\n    pot_instalada_no_ren = pot_instalada_no_ren + array_aux2[i].values[0].percentage;\n}\n\nfor (let i=0; i<=2; i++) {\n    if(i == 0){\n        m.data.datasets[0].data.push(pot_instalada_ren*100);\n        m.data.labels.push(\"Renovable\");\n    }else if (i == 1){\n        m.data.datasets[0].data.push(pot_instalada_no_ren*100);\n        m.data.labels.push(\"No Renovable\");\n    }else{\n        m.data.datasets[0].data.push(0);\n        m.data.labels.push(\"\");\n    }\n}\n\nmsg.payload = m;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 60,
+        "wires": [
+            [
+                "2a8abc86c95a4f71"
+            ]
+        ]
+    },
+    {
+        "id": "2f135417b3216a6a",
+        "type": "http request",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "method": "use",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 350,
+        "y": 60,
+        "wires": [
+            [
+                "740f269bc1921613"
+            ]
+        ]
+    },
+    {
+        "id": "740f269bc1921613",
+        "type": "json",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 490,
+        "y": 60,
+        "wires": [
+            [
+                "891443f634303f88"
+            ]
+        ]
+    },
+    {
+        "id": "2a8abc86c95a4f71",
+        "type": "chart-image",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "width": "550",
+        "height": "500",
+        "x": 830,
+        "y": 60,
+        "wires": [
+            [
+                "80fb0e237449efa9"
+            ]
+        ]
+    },
+    {
+        "id": "80fb0e237449efa9",
+        "type": "file",
+        "z": "522a6776a9c33e2f",
+        "name": "Image dump",
+        "filename": "~/Documentos/test.png",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 990,
+        "y": 60,
+        "wires": [
+            [
+                "31281b5bf47d184e"
+            ]
+        ]
+    },
+    {
+        "id": "31281b5bf47d184e",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Envío de foto",
+        "func": "msg.payload = {chatId: flow.get(\"chatId\"), type:\"photo\", content:\"~/Documentos/test.png\", caption:\"Gráfico de potencia instalada renovable contra no renovable\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 60,
+        "wires": [
+            [
+                "f7ea37e0.ae85f8"
+            ]
+        ]
+    },
+    {
+        "id": "e7b05566381b14e8",
+        "type": "telegram bot",
+        "botname": "BotRedElectrica",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
