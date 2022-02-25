@@ -12,7 +12,7 @@
         "type": "function",
         "z": "522a6776a9c33e2f",
         "name": "Generación tec.",
-        "func": "let now = new Date();\n\nvar array = msg.payload.included;\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'(%)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nvar array_aux = [];\nvar array_aux2 = [];\n\nfor(let i = 0; i < array.length - 1; i++){\n    if(array[i].attributes.type == \"Renovable\"){\n        array_aux.push(array[i].attributes);\n        //array_aux.title.push(array[i].attributes.title);\n    }else{\n        array_aux2.push(array[i].attributes);\n        //array_aux.title.push(array[i].attributes.title);\n    }\n}\n\nvar aux = {};\n\nfor(let i = 0; i < array_aux.length; i++){\n    for(let j = i; j < array_aux.length; j++){\n        if(array_aux[j].values[0].percentage > array_aux[i].values[0].percentage){\n            aux = array_aux[i];\n            array_aux[i] = array_aux[j];\n            array_aux[j] = aux;\n        }\n    }\n}\n\nfor(let i = 0; i < array_aux2.length; i++){\n    for(let j = i; j < array_aux2.length; j++){\n        if(array_aux2[j].values[0].percentage > array_aux2[i].values[0].percentage){\n            aux = array_aux2[i];\n            array_aux2[i] = array_aux2[j];\n            array_aux2[j] = aux;\n        }\n    }\n}\nlet j = 0;\nfor (let i=0; i<6; i++) {\n    if(i >= 0 && i <= 2){\n        m.data.datasets[0].data.push(array_aux[i].values[0].percentage*100);\n        m.data.labels.push(array_aux[i].title);\n    }else{\n        m.data.datasets[0].data.push(array_aux2[j].values[0].percentage*100);\n        m.data.labels.push(array_aux2[j].title);\n        j++;\n    }\n}\n\nmsg.payload = m;\nreturn msg;\n",
+        "func": "var array = msg.payload.included;\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'(%)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nvar array_aux = [];\nvar array_aux2 = [];\n\nfor(let i = 0; i < array.length - 1; i++){\n    if(array[i].attributes.type == \"Renovable\"){\n        array_aux.push(array[i].attributes);\n    }else{\n        array_aux2.push(array[i].attributes);\n    }\n}\n\nvar aux = {};\n\nfor(let i = 0; i < array_aux.length; i++){\n    for(let j = i; j < array_aux.length; j++){\n        if(array_aux[j].values[0].percentage > array_aux[i].values[0].percentage){\n            aux = array_aux[i];\n            array_aux[i] = array_aux[j];\n            array_aux[j] = aux;\n        }\n    }\n}\n\nfor(let i = 0; i < array_aux2.length; i++){\n    for(let j = i; j < array_aux2.length; j++){\n        if(array_aux2[j].values[0].percentage > array_aux2[i].values[0].percentage){\n            aux = array_aux2[i];\n            array_aux2[i] = array_aux2[j];\n            array_aux2[j] = aux;\n        }\n    }\n}\nlet j = 0;\nfor (let i=0; i<6; i++) {\n    if(i >= 0 && i <= 2){\n        m.data.datasets[0].data.push(array_aux[i].values[0].percentage*100);\n        m.data.labels.push(array_aux[i].title);\n    }else{\n        m.data.datasets[0].data.push(array_aux2[j].values[0].percentage*100);\n        m.data.labels.push(array_aux2[j].title);\n        j++;\n    }\n}\n\nmsg.payload = m;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -59,7 +59,7 @@
         "y": 180,
         "wires": [
             [
-                "f7ea37e0.ae85f8"
+                "5596314302dc66cb"
             ]
         ]
     },
@@ -71,8 +71,8 @@
         "bot": "e7b05566381b14e8",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 830,
-        "y": 360,
+        "x": 170,
+        "y": 440,
         "wires": [
             []
         ]
@@ -82,7 +82,7 @@
         "type": "function",
         "z": "522a6776a9c33e2f",
         "name": "Precios",
-        "func": "var mercado = msg.payload;\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:true,\n            text:'Línea amarilla: PVPC (euro/MWh) // Línea azul: Precio mercado spot (euro/MWh)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Series 1\",\n                borderColor:'rgba(184, 163, 57,0.8)',\n                backgroundColor:'rgba(184, 163, 57,0.1)',\n                fill:false,\n                data:[]\n            },\n            {\n                label:\"Series 2\",\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            },\n        ]\n    }\n}\n\nfor (let i=0; i<24; i++) {\n    m.data.datasets[0].data.push(mercado.included[0].attributes.values[i].value);\n    m.data.datasets[1].data.push(mercado.included[1].attributes.values[i].value);\n    m.data.labels.push(mercado.included[0].attributes.values[i].datetime[11] + mercado.included[0].attributes.values[i].datetime[12]);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "func": "var mercado = msg.payload;\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:false,\n            //text:'(euro/MWh)'\n        },\n        legend: {\n            display:true,\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label: mercado.included[0].type,\n                borderColor:'rgba(184, 163, 57,0.8)',\n                backgroundColor:'rgba(184, 163, 57,0.1)',\n                fill:false,\n                data:[]\n            },\n            {\n                label: mercado.included[1].type,\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            },\n        ]\n    }\n}\n\nfor (let i=0; i<24; i++) {\n    m.data.datasets[0].data.push(mercado.included[0].attributes.values[i].value);\n    m.data.datasets[1].data.push(mercado.included[1].attributes.values[i].value);\n    m.data.labels.push(mercado.included[0].attributes.values[i].datetime[11] + mercado.included[0].attributes.values[i].datetime[12]);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -171,8 +171,8 @@
         "type": "function",
         "z": "522a6776a9c33e2f",
         "name": "",
-        "func": "var mensaje = msg.payload;\n\nvar Bienvenida = \"¡Bienvenido al Bot de Red eléctrica de España!\\r\\n\";\nBienvenida += \"Para introducir los comandos, puede dirigirse a la pestaña 'Menú' que aparece a la izquierda del cuadro para escribir mensajes, o bien puede escribir directamente el comando.\\r\\n\";\nBienvenida += \"La lista de comandos es: \\r\\n\";\nBienvenida += \"/ren_vs_noren - Gráfico de la potencia instalada renovable y no renovable\\r\\n\";\nBienvenida += \"/precios - Gráfico de precios\\r\\n\";\nBienvenida += \"/generacion - Gráfico de generación de tecnologías\\r\\n\";\n\nvar Ayuda = \"Para introducir los comandos, puede dirigirse a la pestaña 'Menú' que aparece a la izquierda del cuadro para escribir mensajes, o bien puede escribir directamente el comando.\\r\\n\";\nAyuda += \"La lista de comandos es: \\r\\n\";\nAyuda += \"/ren_vs_noren - Gráfico de la potencia instalada renovable y no renovable\\r\\n\";\nAyuda += \"/precios - Gráfico de precios\\r\\n\";\nAyuda += \"/generacion - Gráfico de generación de tecnologías\\r\\n\";\n\nlet now = new Date();\nvar dia = now.getDate();\nvar anio = now.getFullYear();\nvar mes = now.getMonth() + 1;\nvar metodo = \"get\";\n\nflow.set(\"chatId\", mensaje.chatId);\nflow.set(\"mansaje\", mensaje.content);\nflow.set(\"type\", mensaje.type)\n\nif (mensaje.content == \"/ren_vs_noren\"){\n    var msg1 = {};\n    msg1.method = {};\n    msg1.url = {};\n    msg1.method = metodo;\n    msg1.url = \"https://apidatos.ree.es/es/datos/generacion/potencia-instalada?start_date=\" + anio + \"-\" + \"01\" + \"-\" + \"01\" + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&time_trunc=year\";\n    return [msg1, null, null, null, null, null];\n}else if(mensaje.content == \"/generacion\"){\n    var msg2 = {};\n    msg2.method = {};\n    msg2.url = {};\n    msg2.method = metodo;\n    msg2.url = \"https://apidatos.ree.es/es/datos/generacion/estructura-generacion?start_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T23:59&time_trunc=day&geo_limit=ccaa\";\n    return [null, msg2, null, null, null, null];\n}else if(mensaje.content == \"/precios\"){\n    var msg3 = {};\n    msg3.method = {};\n    msg3.url = {};\n    msg3.method = metodo;\n    msg3.url = \"https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T23:59&time_trunc=hour\";\n    return [null, null, msg3, null, null, null];\n}else if (mensaje.content == \"/start\" || mensaje.content == \"Hola\"){\n   var msg4 = {};\n   msg4.payload = {};\n   msg4.payload.content = Bienvenida;\n   msg4.payload.chatId = flow.get(\"chatId\");\n   msg4.payload.type = flow.get(\"type\");\n   return [null, null, null, msg4, null]; \n}else if(mensaje.content == \"/help\"){\n    var msg5 = {};\n    msg5.payload = {};\n    msg5.payload.content = Ayuda;\n    msg5.payload.chatId = flow.get(\"chatId\");\n    msg5.payload.type = flow.get(\"type\");\n    return [null, null, null, null, msg5, null];\n}else{\n    msg.payload.content = \"Comando incorrecto. Use /help para ver la lista de comandos\";\n    return [null, null, null, null, null, msg];\n}",
-        "outputs": 6,
+        "func": "var mensaje = msg.payload;\n\nvar Bienvenida = \"¡Bienvenido al Bot de Red eléctrica de España!\\r\\n\\n\";\nBienvenida += \"Para introducir los comandos, puede dirigirse a la pestaña 'Menú' que aparece a la izquierda del cuadro para escribir mensajes, o bien puede escribir directamente el comando.\\r\\n\\n\";\nBienvenida += \"La lista de comandos es: \\r\\n\\n\";\nBienvenida += \"/ren_vs_noren - Gráfico de la potencia instalada renovable y no renovable\\r\\n\";\nBienvenida += \"/precios - Gráfico de precios\\r\\n\";\nBienvenida += \"/generacion - Gráfico de generación de tecnologías\\r\\n\";\nBienvenida += \"/demanda - Gráfico de la demanda actual\"\n\nvar Ayuda = \"Para introducir los comandos, puede dirigirse a la pestaña 'Menú' que aparece a la izquierda del cuadro para escribir mensajes, o bien puede escribir directamente el comando.\\r\\n\\n\";\nAyuda += \"La lista de comandos es: \\r\\n\\n\";\nAyuda += \"/ren_vs_noren - Gráfico de la potencia instalada renovable y no renovable\\r\\n\";\nAyuda += \"/precios - Gráfico de precios\\r\\n\";\nAyuda += \"/generacion - Gráfico de generación de tecnologías\\r\\n\";\nAyuda += \"/demanda - Gráfico de la demanda actual\"\n\nlet now = new Date();\nvar dia = now.getDate();\nvar anio = now.getFullYear();\nvar mes = now.getMonth() + 1;\nvar hora = now.getHours();\nvar minutos = now.getMinutes();\nvar metodo = \"get\";\n\nflow.set(\"chatId\", mensaje.chatId);\nflow.set(\"mansaje\", mensaje.content);\nflow.set(\"type\", mensaje.type)\n\nif (mensaje.content == \"/ren_vs_noren\"){\n    var msg1 = {};\n    msg1.method = {};\n    msg1.url = {};\n    msg1.method = metodo;\n    msg1.url = \"https://apidatos.ree.es/es/datos/generacion/potencia-instalada?start_date=\" + anio + \"-\" + \"01\" + \"-\" + \"01\" + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&time_trunc=year\";\n    return [msg1, null, null, null, null, null];\n}else if(mensaje.content == \"/generacion\"){\n    var msg2 = {};\n    msg2.method = {};\n    msg2.url = {};\n    msg2.method = metodo;\n    msg2.url = \"https://apidatos.ree.es/es/datos/generacion/estructura-generacion?start_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T23:59&time_trunc=day&geo_limit=ccaa\";\n    return [null, msg2, null, null, null, null];\n}else if(mensaje.content == \"/precios\"){\n    var msg3 = {};\n    msg3.method = {};\n    msg3.url = {};\n    msg3.method = metodo;\n    msg3.url = \"https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T23:59&time_trunc=hour\";\n    return [null, null, msg3, null, null, null];\n}else if(mensaje.content == \"/demanda\"){\n    var msg4 = {};\n    msg4.method = {};\n    msg4.url = {};\n    msg4.method = metodo;\n    msg4.url = \"https://apidatos.ree.es/es/datos/demanda/demanda-tiempo-real?start_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T00:00&end_date=\" + anio + \"-\" + mes + \"-\" + dia + \"T\" + hora + \":00&time_trunc=hour\";\n    return [null, null, null, msg4, null, null];\n}else if (mensaje.content == \"/start\" || mensaje.content == \"Hola\"){\n   var msg5 = {};\n   msg5.payload = {};\n   msg5.payload.content = Bienvenida;\n   msg5.payload.chatId = flow.get(\"chatId\");\n   msg5.payload.type = flow.get(\"type\");\n   return [null, null, null, null, msg5, null, null]; \n}else if(mensaje.content == \"/help\"){\n    var msg6 = {};\n    msg6.payload = {};\n    msg6.payload.content = Ayuda;\n    msg6.payload.chatId = flow.get(\"chatId\");\n    msg6.payload.type = flow.get(\"type\");\n    return [null, null, null, null, null, msg6, null];\n}else{\n    msg.payload.content = \"Comando incorrecto. Use /help para ver la lista de comandos\";\n    return [null, null, null, null, null, null,msg];\n}",
+        "outputs": 7,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -188,6 +188,9 @@
             ],
             [
                 "fd0df04c528a3997"
+            ],
+            [
+                "dc055319c376bd4d"
             ],
             [
                 "f7ea37e0.ae85f8"
@@ -276,7 +279,7 @@
         "type": "function",
         "z": "522a6776a9c33e2f",
         "name": "Envío de foto",
-        "func": "msg.payload = {chatId: flow.get(\"chatId\"), type:\"photo\", content:\"~/Documentos/test.png\", caption:\"Gráfico de generación de las principales tecnologias tanto renovables como no renovables\"};\nreturn msg;\n",
+        "func": "msg.payload = {chatId: flow.get(\"chatId\"), type:\"photo\", content:\"~/Documentos/test.png\", caption:\"Gráfico de generación de las tres tecnologías renovables que más generan y de las tres tecnologías no renovables que más generan hoy\"};\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -286,7 +289,7 @@
         "y": 120,
         "wires": [
             [
-                "f7ea37e0.ae85f8"
+                "5596314302dc66cb"
             ]
         ]
     },
@@ -295,7 +298,7 @@
         "type": "function",
         "z": "522a6776a9c33e2f",
         "name": "Ren_vs_no_ren",
-        "func": "let now = new Date();\n\nvar array = msg.payload.included;\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'(%)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nvar array_aux = [];\nvar array_aux2 = [];\n\nfor(let i = 0; i < array.length - 1; i++){\n    if(array[i].attributes.type == \"Renovable\"){\n        array_aux.push(array[i].attributes);\n    }else{\n        array_aux2.push(array[i].attributes);\n    }\n}\n\nvar pot_instalada_ren = 0;\n\nfor(let i = 0; i < array_aux.length; i++){\n    pot_instalada_ren = pot_instalada_ren + array_aux[i].values[0].percentage;\n}\n\nvar pot_instalada_no_ren = 0;\n\nfor(let i = 0; i < array_aux2.length; i++){\n    pot_instalada_no_ren = pot_instalada_no_ren + array_aux2[i].values[0].percentage;\n}\n\nfor (let i=0; i<=2; i++) {\n    if(i == 0){\n        m.data.datasets[0].data.push(pot_instalada_ren*100);\n        m.data.labels.push(\"Renovable\");\n    }else if (i == 1){\n        m.data.datasets[0].data.push(pot_instalada_no_ren*100);\n        m.data.labels.push(\"No Renovable\");\n    }else{\n        m.data.datasets[0].data.push(0);\n        m.data.labels.push(\"\");\n    }\n}\n\nmsg.payload = m;\nreturn msg;\n",
+        "func": "var array = msg.payload.included;\n\n// Create the chart object\nlet m = {\n    type: 'bar',\n    options: {\n        title: {\n            display:true,\n            text:'(%)'\n        },\n        legend: {\n            display:false\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:1,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label:\"Sample data\",\n                backgroundColor:'rgba(57,97,184,0.8)',\n                data:[]\n            }\n        ]\n    }\n}\n\nvar array_aux = [];\nvar array_aux2 = [];\n\nfor(let i = 0; i < array.length - 1; i++){\n    if(array[i].attributes.type == \"Renovable\"){\n        array_aux.push(array[i].attributes);\n    }else{\n        array_aux2.push(array[i].attributes);\n    }\n}\n\nvar pot_instalada_ren = 0;\n\nfor(let i = 0; i < array_aux.length; i++){\n    pot_instalada_ren = pot_instalada_ren + array_aux[i].values[0].percentage;\n}\n\nvar pot_instalada_no_ren = 0;\n\nfor(let i = 0; i < array_aux2.length; i++){\n    pot_instalada_no_ren = pot_instalada_no_ren + array_aux2[i].values[0].percentage;\n}\n\nfor (let i=0; i<=2; i++) {\n    if(i == 0){\n        m.data.datasets[0].data.push(pot_instalada_ren*100);\n        m.data.labels.push(\"Renovable\");\n    }else if (i == 1){\n        m.data.datasets[0].data.push(pot_instalada_no_ren*100);\n        m.data.labels.push(\"No Renovable\");\n    }else{\n        m.data.datasets[0].data.push(0);\n        m.data.labels.push(\"\");\n    }\n}\n\nmsg.payload = m;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -391,11 +394,134 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1170,
+        "x": 1150,
         "y": 60,
         "wires": [
             [
-                "f7ea37e0.ae85f8"
+                "5596314302dc66cb"
+            ]
+        ]
+    },
+    {
+        "id": "5596314302dc66cb",
+        "type": "telegram sender",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "bot": "e7b05566381b14e8",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1430,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3512781bc5697bbd",
+        "type": "file",
+        "z": "522a6776a9c33e2f",
+        "name": "Image dump",
+        "filename": "~/Documentos/test.png",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 990,
+        "y": 240,
+        "wires": [
+            [
+                "4107d42c6ec0fa74"
+            ]
+        ]
+    },
+    {
+        "id": "4107d42c6ec0fa74",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Envío de foto",
+        "func": "msg.payload = {chatId: flow.get(\"chatId\"), type:\"photo\", content:\"~/Documentos/test.png\", caption:\"Gráfico de la demanda de electricidad en tiempo real durante el día de hoy\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 240,
+        "wires": [
+            [
+                "5596314302dc66cb"
+            ]
+        ]
+    },
+    {
+        "id": "0b0666c2acfe27c8",
+        "type": "function",
+        "z": "522a6776a9c33e2f",
+        "name": "Demanda",
+        "func": "var mercado = msg.payload;\n// Create the chart object\nlet m = {\n    type: 'line',\n    options: {\n        title: {\n            display:true,\n            text:'(MWh)'\n        },\n        legend: {\n            display:true,\n        },\n        chartArea: {\n            backgroundColor: 'white'\n        },\n        plugins: {\n            datalabels: {\n                display:true,\n                backgroundColor:'whitesmoke',\n                borderRadius:1,\n                padding:0,\n                align: 'right',\n                anchor: function(context) {\n                    //node.send({debug:{dataindex:context.dataIndex}});\n                    if (context.dataIndex == context.dataset.data.length - 1) {\n                        return 'center';\n                    } else {\n                        return 'end';\n                    }\n                },\n                offset:8,\n                formatter:function(value) {\n                    return value > 0 ? value.toLocaleString() : '';\n                }\n            }\n        }\n    },\n    data: {\n        labels:[],\n        datasets: [\n            {\n                label: mercado.included[0].type,\n                borderColor:'rgba(184, 163, 57,0.8)',\n                backgroundColor:'rgba(184, 163, 57,0.1)',\n                fill:false,\n                data:[]\n            },\n            {\n                label:mercado.included[1].type,\n                borderColor:'rgba(57,97,184,0.8)',\n                fill:false,\n                data:[]\n            },\n            {\n                label: mercado.included[2].type,\n                borderColor:'rgba(184, 57, 93,0.8)',\n                fill:false,\n                data:[]\n            }\n        ]\n    }\n}\n\nfor (let i=0; i<mercado.included[0].attributes.values.length; i += 6) {\n    m.data.datasets[0].data.push(mercado.included[0].attributes.values[i].value);\n    m.data.datasets[1].data.push(mercado.included[1].attributes.values[i].value);\n    m.data.datasets[2].data.push(mercado.included[2].attributes.values[i].value);\n    m.data.labels.push(mercado.included[0].attributes.values[i].datetime[11] + mercado.included[0].attributes.values[i].datetime[12]);\n}\n\nmsg.payload = m;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 240,
+        "wires": [
+            [
+                "b660a8022debf029"
+            ]
+        ]
+    },
+    {
+        "id": "b660a8022debf029",
+        "type": "chart-image",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "width": "550",
+        "height": "500",
+        "x": 830,
+        "y": 240,
+        "wires": [
+            [
+                "3512781bc5697bbd"
+            ]
+        ]
+    },
+    {
+        "id": "dc055319c376bd4d",
+        "type": "http request",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "method": "use",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 350,
+        "y": 240,
+        "wires": [
+            [
+                "dc5231f09df98b56"
+            ]
+        ]
+    },
+    {
+        "id": "dc5231f09df98b56",
+        "type": "json",
+        "z": "522a6776a9c33e2f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 490,
+        "y": 240,
+        "wires": [
+            [
+                "0b0666c2acfe27c8"
             ]
         ]
     },
